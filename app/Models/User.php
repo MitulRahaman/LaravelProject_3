@@ -4,9 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -43,4 +45,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected function isAdmin(): Attribute
+    {
+        $admins = ['rahmanmitul00@gmail.com'];
+        return Attribute::make(
+            get: fn() => in_array($this->email, $admins)
+        );
+    }
+
+    public function problems(): HasMany
+    {
+        return $this->hasMany(Problem::class);
+    }
 }
